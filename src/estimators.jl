@@ -65,10 +65,10 @@ function validate_SE(background, _mean, _median, _std)
     return background
 end
 
-function (::SourceExtractorBackground)(data; dims = :)
-    _mean = mean(data, dims = dims)
-    _median = median(data, dims = dims)
-    _std = std(data, dims = dims)
+function (::SourceExtractorBackground)(data; dims=:)
+    _mean = mean(data; dims=dims)
+    _median = median(data; dims=dims)
+    _std = std(data; dims=dims)
 
     background = @. 2.5 * _median - 1.5 * _mean
     return validate_SE.(background, _mean, _median, _std)
@@ -101,9 +101,9 @@ Base.@kwdef struct MMMBackground <: LocationEstimator
     mean_factor = 2
 end
 
-function (alg::MMMBackground)(data; dims = :)
-    alg.median_factor .* median(data, dims = dims) .-
-    alg.mean_factor .* mean(data, dims = dims)
+function (alg::MMMBackground)(data; dims=:)
+    return alg.median_factor .* median(data; dims=dims) .-
+           alg.mean_factor .* mean(data; dims=dims)
 end
 
 """
@@ -130,7 +130,7 @@ Base.@kwdef struct BiweightLocationBackground <: LocationEstimator
     M = nothing
 end
 
-(alg::BiweightLocationBackground)(data; dims = :) = location(data; dims, alg.c, alg.M)
+(alg::BiweightLocationBackground)(data; dims=:) = location(data; dims, alg.c, alg.M)
 
 ########################################################################
 # RMS Estimators
@@ -154,7 +154,7 @@ julia> StdRMS()(data, dims=1)
 """
 struct StdRMS <: RMSEstimator end
 
-(::StdRMS)(data; dims = :) = std(data; corrected = false, dims = dims)
+(::StdRMS)(data; dims=:) = std(data; corrected=false, dims=dims)
 
 """
     MADStdRMS()
@@ -179,9 +179,9 @@ julia> MADStdRMS()(data, dims=1)
 """
 struct MADStdRMS <: RMSEstimator end
 
-_mad(data, ::Colon) = mad(data, normalize = true)
-_mad(data, dims) = mapslices(x -> mad(x, normalize = true), data; dims = dims)
-(::MADStdRMS)(data; dims = :) = _mad(data, dims)
+_mad(data, ::Colon) = mad(data; normalize=true)
+_mad(data, dims) = mapslices(x -> mad(x; normalize=true), data; dims=dims)
+(::MADStdRMS)(data; dims=:) = _mad(data, dims)
 
 """
     BiweightScaleRMS(c=9.0, M=nothing)
@@ -209,4 +209,4 @@ Base.@kwdef struct BiweightScaleRMS <: RMSEstimator
     M = nothing
 end
 
-(alg::BiweightScaleRMS)(data; dims = :) = scale(data; dims, alg.c, alg.M)
+(alg::BiweightScaleRMS)(data; dims=:) = scale(data; dims, alg.c, alg.M)

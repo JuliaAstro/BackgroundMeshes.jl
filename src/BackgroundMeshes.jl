@@ -4,19 +4,19 @@ using Statistics
 using ImageFiltering: padarray, Fill, mapwindow
 
 export estimate_background,
-       sigma_clip,
-       sigma_clip!,
-# Estimators
-       MMMBackground,
-       SourceExtractorBackground,
-       BiweightLocationBackground,
-# RMS Estimators
-       StdRMS,
-       MADStdRMS,
-       BiweightScaleRMS,
-# Interpolators
-       ZoomInterpolator,
-       IDWInterpolator
+    sigma_clip,
+    sigma_clip!,
+    # Estimators
+    MMMBackground,
+    SourceExtractorBackground,
+    BiweightLocationBackground,
+    # RMS Estimators
+    StdRMS,
+    MADStdRMS,
+    BiweightScaleRMS,
+    # Interpolators
+    ZoomInterpolator,
+    IDWInterpolator
 
 include("estimators.jl")
 include("interpolators.jl")
@@ -52,11 +52,10 @@ julia> bkg, bkg_rms = estimate_background(data; location=median, rms=MADStdRMS()
 # See Also
 * [Location Estimators](@ref), [RMS Estimators](@ref)
 """
-function estimate_background(data;
-                             location = SourceExtractorBackground(),
-                             rms = StdRMS(),
-                             dims = :)
-    return location(data, dims = dims), rms(data, dims = dims)
+function estimate_background(
+    data; location=SourceExtractorBackground(), rms=StdRMS(), dims=:
+)
+    return location(data; dims=dims), rms(data; dims=dims)
 end
 
 """
@@ -83,13 +82,15 @@ After filtering (if applicable), the meshes are passed to the `itp` to recreate 
 # See Also
 * [Location Estimators](@ref), [RMS Estimators](@ref), [Interpolators](@ref)
 """
-function estimate_background(data::AbstractArray{T},
-                             box_size::NTuple{2, <:Integer};
-                             location = SourceExtractorBackground(),
-                             rms = StdRMS(),
-                             itp = ZoomInterpolator(box_size),
-                             edge_method = :pad,
-                             kwargs...) where {T}
+function estimate_background(
+    data::AbstractArray{T},
+    box_size::NTuple{2,<:Integer};
+    location=SourceExtractorBackground(),
+    rms=StdRMS(),
+    itp=ZoomInterpolator(box_size),
+    edge_method=:pad,
+    kwargs...,
+) where {T}
 
     # handle border effects
     X, nmesh = _craft_array(Val(edge_method), data, box_size)
@@ -120,14 +121,24 @@ function estimate_background(data::AbstractArray{T},
     return bkg, bkg_rms
 end
 
-function estimate_background(data,
-                             box_size::Int;
-                             location = SourceExtractorBackground(),
-                             rms = StdRMS(),
-                             itp = ZoomInterpolator(box_size),
-                             edge_method = :pad, kwargs...)
-    estimate_background(data, (box_size, box_size); location = location, rms = rms,
-                        itp = itp, edge_method = edge_method, kwargs...)
+function estimate_background(
+    data,
+    box_size::Int;
+    location=SourceExtractorBackground(),
+    rms=StdRMS(),
+    itp=ZoomInterpolator(box_size),
+    edge_method=:pad,
+    kwargs...,
+)
+    return estimate_background(
+        data,
+        (box_size, box_size);
+        location=location,
+        rms=rms,
+        itp=itp,
+        edge_method=edge_method,
+        kwargs...,
+    )
 end
 
 # pad array
@@ -150,13 +161,13 @@ function _craft_array(::Val{:crop}, data, box_size)
 end
 
 # filter meshes
-function _filter(bkg, bkg_rms, filter_size::NTuple{2, <:Integer})
+function _filter(bkg, bkg_rms, filter_size::NTuple{2,<:Integer})
     # skip trivial
     filter_size == (1, 1) && return bkg, bkg_rms
 
     # perform median filter
-    bkg = mapwindow(median!, bkg, filter_size, border = "replicate")
-    bkg_rms = mapwindow(median!, bkg_rms, filter_size, border = "replicate")
+    bkg = mapwindow(median!, bkg, filter_size; border="replicate")
+    bkg_rms = mapwindow(median!, bkg_rms, filter_size; border="replicate")
     return bkg, bkg_rms
 end
 
@@ -174,12 +185,14 @@ In-place version of [`sigma_clip`](@ref)
 
     To avoid this, we recommend converting to float before clipping, or using [`sigma_clip`](@ref) which does this internally.
 """
-function sigma_clip!(x::AbstractArray{T},
-                     sigma_low::Real,
-                     sigma_high::Real = sigma_low;
-                     fill = :clamp,
-                     center = median(x),
-                     std = std(x, corrected = false)) where {T}
+function sigma_clip!(
+    x::AbstractArray{T},
+    sigma_low::Real,
+    sigma_high::Real=sigma_low;
+    fill=:clamp,
+    center=median(x),
+    std=std(x; corrected=false),
+) where {T}
     # clamp
     fill === :clamp && return clamp!(x, center - sigma_low * std, center + sigma_high * std)
     # fill
@@ -211,9 +224,15 @@ julia> extrema(x_clip) # should be close to (-1, 1)
 (-1.0042721545326967, 0.9957463910682249)
 ```
 """
-function sigma_clip(x::AbstractArray{T}, sigma_low::Real, sigma_high::Real = sigma_low;
-                    fill = :clamp, center = median(x), std = std(x)) where {T}
-    sigma_clip!(float(x), sigma_low, sigma_high; fill = fill, center = center, std = std)
+function sigma_clip(
+    x::AbstractArray{T},
+    sigma_low::Real,
+    sigma_high::Real=sigma_low;
+    fill=:clamp,
+    center=median(x),
+    std=std(x),
+) where {T}
+    return sigma_clip!(float(x), sigma_low, sigma_high; fill=fill, center=center, std=std)
 end
 
 end
