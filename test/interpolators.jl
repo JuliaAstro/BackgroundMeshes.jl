@@ -1,4 +1,4 @@
-import Photometry.Background: ShepardIDWInterpolator
+using BackgroundMeshes: ShepardIDWInterpolator
 
 @testset "IDWInterpolator" begin
     @test IDWInterpolator((2, 3); k=4)(ones(3, 2)) == ones(6, 6)

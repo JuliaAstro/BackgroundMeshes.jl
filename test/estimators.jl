@@ -8,26 +8,47 @@ using StatsBase: mad
     MMMBackground, SourceExtractorBackground, BiweightLocationBackground
 ]
     estimator = E()
+    frame_size = (1000, 1000)
 
     @test estimator(ones(1)) == 1
+    ## Flat ones
+    data = ones(frame_size)
+    @test all(d -> isapprox(d, 1), estimator(data))
 
-    data = ones(10, 10)
+    # along each dimension
+    res = estimator(data; dims=1)
+    @test size(res) == (1, frame_size[2])
+    @test all(d -> isapprox(d, 1), res)
 
-    @test estimator(data) ≈ 1.0
-    @test estimator(data; dims=1) ≈ ones(1, 10)
-    @test estimator(data; dims=2) ≈ ones(10)
+    res = estimator(data; dims=2)
+    @test size(res) == (frame_size[1], 1)
+    @test all(d -> isapprox(d, 1), res)
 
-    data = zeros(10, 10)
+    ## Flat zeros
+    data = zeros(frame_size)
+    @test all(d -> isapprox(d, 0; atol=1e-2), estimator(data))
 
-    @test estimator(data) ≈ 0.0
-    @test estimator(data; dims=1) ≈ zeros(1, 10)
-    @test estimator(data; dims=2) ≈ zeros(10)
+    # along each dimension
+    res = estimator(data; dims=1)
+    @test size(res) == (1, frame_size[2])
+    @test all(d -> isapprox(d, 0; atol=1e-2), res)
 
-    data = randn(rng, 100, 100)
+    res = estimator(data; dims=2)
+    @test size(res) == (frame_size[1], 1)
+    @test all(d -> isapprox(d, 0; atol=1e-2), res)
 
-    @test estimator(data) ≈ 0.0 atol = 1e-2
-    @test estimator(data; dims=1) ≈ zeros(1, 10) atol = 1e-2
-    @test estimator(data; dims=2) ≈ zeros(10) atol = 1e-2
+    ## Random data
+    data = randn(rng, frame_size)
+    @test all(d -> isapprox(d, 0; atol=1e-2), estimator(data))
+
+    # along each dimension
+    res = estimator(data; dims=1)
+    @test size(res) == (1, frame_size[2])
+    @test all(d -> isapprox(d, 0; atol=1e-2), res)
+
+    res = estimator(data; dims=2)
+    @test size(res) == (frame_size[1], 1)
+    @test all(d -> isapprox(d, 0; atol=1e-2), res)
 end
 
 @testset "SourceExtractorBackground" begin
@@ -49,18 +70,34 @@ end
 
 @testset "Trivial $E" for E in [StdRMS, MADStdRMS, BiweightScaleRMS]
     estimator = E()
+    frame_size = (1000, 1000)
 
     @test estimator(ones(1)) == 0
+    ## Flat data
+    data = ones(frame_size)
+    @test all(d -> isapprox(d, 0; atol=1e-2), estimator(data))
 
-    data = ones(10, 10)
-    @test estimator(data) ≈ 0.0
-    @test estimator(data; dims=1) ≈ zeros(1, 10)
-    @test estimator(data; dims=2) ≈ zeros(10)
+    # along each dimension
+    res = estimator(data; dims=1)
+    @test size(res) == (1, frame_size[2])
+    @test all(d -> isapprox(d, 0; atol=1e-2), res)
 
-    data = randn(rng, 10000, 10000)
-    @test estimator(data) ≈ 1 atol = 3e-2
-    @test estimator(data; dims=1) ≈ ones(1, 10) atol = 1e-2
-    @test estimator(data; dims=2) ≈ ones(10) atol = 1e-2
+    res = estimator(data; dims=2)
+    @test size(res) == (frame_size[1], 1)
+    @test all(d -> isapprox(d, 0; atol=1e-2), res)
+
+    ## random data
+    data = randn(rng, frame_size)
+    @test all(d -> isapprox(d, 1), estimator(data))
+
+    # along each dimension
+    res = estimator(data; dims=1)
+    @test size(res) == (1, frame_size[2])
+    @test all(d -> isapprox(d, 1), res)
+
+    res = estimator(data; dims=2)
+    @test size(res) == (frame_size[1], 1)
+    @test all(d -> isapprox(d, 1), res)
 end
 
 @testset "StdRMS" begin
