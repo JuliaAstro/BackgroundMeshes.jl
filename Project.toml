@@ -1,0 +1,7 @@
+name = "BackgroundMeshes"
+uuid = "b200be5e-c4c1-4b3d-840b-d423a53b46f3"
+authors = ["Miles Lucas <mdlucas@hawaii.edu> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.6"
