@@ -103,8 +103,9 @@ Base.@kwdef struct MMMBackground <: LocationEstimator
 end
 
 function (alg::MMMBackground)(data; dims=:)
-    return alg.median_factor .* median(data; dims=dims) .-
-           alg.mean_factor .* mean(data; dims=dims)
+    _median = median(data; dims=dims)
+    _mean = mean(data; dims=dims)
+    return @. alg.median_factor * _median - alg.mean_factor * _mean
 end
 
 """
@@ -127,7 +128,7 @@ julia> BiweightLocationBackground(c=5.5)(x; dims = 1)
 ```
 """
 Base.@kwdef struct BiweightLocationBackground <: LocationEstimator
-    c = 6.0
+    c = 6
     M = nothing
 end
 
