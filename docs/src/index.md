@@ -18,7 +18,7 @@ Currently, this package is unregistered and must be installed directly from this
 
 ```julia
 julia>]
-pkg> add https://github.com/JuliaAstro/BackgroundMeshes.jl"
+pkg> add https://github.com/JuliaAstro/BackgroundMeshes.jl
 ```
 
 ```julia
