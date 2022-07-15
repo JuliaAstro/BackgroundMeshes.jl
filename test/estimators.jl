@@ -4,10 +4,9 @@ using StatsBase: mad
 ###############################################################################
 # Location Estimators
 
-@testset "Trivial $E" for E in [
-    MMMBackground, SourceExtractorBackground, BiweightLocationBackground
-]
-    estimator = E()
+@testset "Trivial $estimator" for estimator in (
+    mean, median, MMMBackground(), SourceExtractorBackground(), BiweightLocationBackground()
+)
     frame_size = (1000, 1000)
 
     @test estimator(ones(1)) == 1
@@ -39,16 +38,16 @@ using StatsBase: mad
 
     ## Random data
     data = randn(rng, frame_size)
-    @test all(d -> isapprox(d, 0; atol=1e-2), estimator(data))
+    @test all(d -> isapprox(d, 0; atol=10/sqrt(prod(frame_size))), estimator(data))
 
     # along each dimension
     res = estimator(data; dims=1)
     @test size(res) == (1, frame_size[2])
-    @test all(d -> isapprox(d, 0; atol=1e-2), res)
+    @test all(d -> isapprox(d, 0; atol=10/sqrt(frame_size[1])), res)
 
     res = estimator(data; dims=2)
     @test size(res) == (frame_size[1], 1)
-    @test all(d -> isapprox(d, 0; atol=1e-2), res)
+    @test all(d -> isapprox(d, 0; atol=10/sqrt(frame_size[2])), res)
 end
 
 @testset "SourceExtractorBackground" begin
@@ -62,14 +61,13 @@ end
 @testset "BiweightLocationBackground" begin
     b = BiweightLocationBackground()
     X = [1, 3, 5, 500, 2]
-    @test b(X) ≈ location(X) atol = 1e-3
+    @test b(X) ≈ location(X; c=b.c)
 end
 
 ###############################################################################
 # RMS Estimators
 
-@testset "Trivial $E" for E in [StdRMS, MADStdRMS, BiweightScaleRMS]
-    estimator = E()
+@testset "Trivial $estimator" for estimator in (StdRMS(), MADStdRMS(), BiweightScaleRMS())
     frame_size = (1000, 1000)
 
     @test estimator(ones(1)) == 0
@@ -88,16 +86,16 @@ end
 
     ## random data
     data = randn(rng, frame_size)
-    @test all(d -> isapprox(d, 1), estimator(data))
+    @test all(d -> isapprox(d, 1; atol=10/sqrt(prod(frame_size))), estimator(data))
 
     # along each dimension
     res = estimator(data; dims=1)
     @test size(res) == (1, frame_size[2])
-    @test all(d -> isapprox(d, 1), res)
+    @test all(d -> isapprox(d, 1; atol=10/sqrt(frame_size[1])), res)
 
     res = estimator(data; dims=2)
     @test size(res) == (frame_size[1], 1)
-    @test all(d -> isapprox(d, 1), res)
+    @test all(d -> isapprox(d, 1; atol=10/sqrt(frame_size[2])), res)
 end
 
 @testset "StdRMS" begin
@@ -115,5 +113,5 @@ end
 @testset "BiweightScaleRMS" begin
     s = BiweightScaleRMS()
     X = [1, 3, 5, 500, 2]
-    @test s(X) ≈ scale(X)
+    @test s(X) ≈ scale(X; c=s.c)
 end
