@@ -21,10 +21,8 @@ end
     data = ones(100, 100)
 
     @test all(estimate_background(data, 20) .== estimate_background(data, (20, 20)))
-    @test all(
-        estimate_background(data, 20; filter_size=3) .==
-        estimate_background(data, (20, 20); filter_size=(3, 3)),
-    )
+    @test estimate_background(data, 20; filter_size=3) ==
+        estimate_background(data, (20, 20); filter_size=(3, 3))
     @test size(estimate_background(data, 19; edge_method=:pad)[1]) == (114, 114)
     @test size(estimate_background(data, 19; edge_method=:crop)[1]) == (95, 95)
     X = rand(rng, 100, 100)
@@ -39,14 +37,14 @@ end
     @test nan_rms ≈ zeros(100, 100)
 end
 
-@testset "flat background - $B, $S" for B in [
+@testset "flat background - $B, $S" for B in (
         median,
         mean,
         MMMBackground(),
         BiweightLocationBackground(),
         SourceExtractorBackground(),
-    ],
-    S in [StdRMS(), MADStdRMS(), BiweightScaleRMS()]
+    ),
+    S in (StdRMS(), MADStdRMS(), BiweightScaleRMS())
 
     data = ones(100, 100)
 

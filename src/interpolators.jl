@@ -1,7 +1,8 @@
-#= 
+#=
 Part of this work is derived from astropy/photutils and astropy/astropy. The relevant derivations
 are considered under a BSD 3-clause license. =#
 
+using ConcreteStructs
 using Interpolations: InterpolationType, CubicSplineInterpolation, AbstractInterpolation
 using ImageTransformations: imresize!
 using NearestNeighbors: knn, KDTree, MinkowskiMetric
@@ -47,8 +48,8 @@ julia> ZoomInterpolator(3, 1)([1 0; 0 1])
 
 ```
 """
-struct ZoomInterpolator <: BackgroundInterpolator
-    factors::NTuple{2,Int}
+@concrete struct ZoomInterpolator{F<:NTuple{2,<:Integer}} <: BackgroundInterpolator
+    factors::F
 end
 
 ZoomInterpolator(factor::Integer) = ZoomInterpolator((factor, factor))
@@ -91,13 +92,14 @@ julia> IDWInterpolator(3, 1; k=2, power=4)([1 0; 0 1])
  0.0        1.0
 ```
 """
-struct IDWInterpolator <: BackgroundInterpolator
-    factors::NTuple{2,Int}
-    leafsize::Int
-    k::Int
-    power::Any
-    reg::Any
-    conf_dist::Any
+@concrete struct IDWInterpolator{F<:NTuple{2,<:Integer},K<:Integer} <:
+                 BackgroundInterpolator
+    factors::F
+    leafsize::K
+    k::K
+    power
+    reg
+    conf_dist
 end
 
 function IDWInterpolator(factors; leafsize=10, k=8, power=1.0, reg=0.0, conf_dist=1e-12)
@@ -110,14 +112,14 @@ function IDWInterpolator(factor::Integer, args...; kwargs...)
 end
 
 function (IDW::IDWInterpolator)(mesh::AbstractArray{T}) where {T}
-    knots = Array{Float64}(undef, 2, length(mesh))
+    knots = Array{float(T)}(undef, 2, length(mesh))
     idxs = CartesianIndices(mesh)
     for (i, idx) in enumerate(idxs)
         @inbounds @views knots[:, i] .= idx.I
     end
 
     itp = ShepardIDWInterpolator(
-        knots, float(mesh), IDW.leafsize, IDW.k, IDW.power, IDW.reg, IDW.conf_dist
+        knots, float(mesh); IDW.leafsize, IDW.k, IDW.power, IDW.reg, IDW.conf_dist
     )
     out = similar(mesh, float(T), size(mesh) .* IDW.factors)
     return imresize!(out, itp)
@@ -128,32 +130,38 @@ end
 
 struct IDW <: InterpolationType end
 
-struct ShepardIDWInterpolator{T<:AbstractFloat,N} <: AbstractInterpolation{T,N,IDW}
+struct ShepardIDWInterpolator{
+    T<:AbstractFloat,N,KD<:KDTree{<:AbstractVector,<:MinkowskiMetric,T},K<:Integer,P,R,C
+} <: AbstractInterpolation{T,N,IDW}
     values::Array{T,N}
-    tree::KDTree{<:AbstractVector,<:MinkowskiMetric,T}
-    k::Integer
-    power::Real
-    reg::Real
-    conf_dist::Real
+    tree::KD
+    k::K
+    power::P
+    reg::R
+    conf_dist::C
 end
 
-#= Warning! These are not accurate for use as a standard interpolator, 
+#= Warning! These are not accurate for use as a standard interpolator,
    but are what we need for our use with images =#
 Base.axes(itp::ShepardIDWInterpolator) = axes(itp.values)
 Base.size(itp::ShepardIDWInterpolator) = size(itp.values)
 
 function ShepardIDWInterpolator(
     knots::AbstractArray,
-    values::AbstractArray,
+    values::AbstractArray;
     leafsize::Integer=10,
     k::Integer=8,
-    power::Real=1,
-    reg::Real=0,
-    conf_dist::Real=1e-12,
-) where {T}
-    length(values) < k && error(
-        "k ($k) must be less than or equal to the number of points ($(length(values)))."
-    )
+    power=1,
+    reg=0,
+    conf_dist=1e-12,
+)
+    if length(values) < k
+        throw(
+            ArgumentError(
+                "k ($k) must be less than or equal to the number of points ($(length(values))).",
+            ),
+        )
+    end
     tree = KDTree(knots; leafsize=leafsize)
     return ShepardIDWInterpolator(values, tree, k, power, reg, conf_dist)
 end

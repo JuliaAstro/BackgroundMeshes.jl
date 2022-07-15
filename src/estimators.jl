@@ -97,9 +97,9 @@ julia> MMMBackground(median_factor=4, mean_factor=3)(x, dims = 1)
 # See Also
 * [`SourceExtractorBackground`](@ref)
 """
-Base.@kwdef struct MMMBackground <: LocationEstimator
-    median_factor = 3
-    mean_factor = 2
+Base.@kwdef struct MMMBackground{T,V} <: LocationEstimator
+    median_factor::T = 3
+    mean_factor::V = 2
 end
 
 function (alg::MMMBackground)(data; dims=:)
@@ -127,9 +127,9 @@ julia> BiweightLocationBackground(c=5.5)(x; dims = 1)
  1.0  1.0  1.0  1.0  1.0
 ```
 """
-Base.@kwdef struct BiweightLocationBackground <: LocationEstimator
-    c = 6
-    M = nothing
+Base.@kwdef struct BiweightLocationBackground{T,V} <: LocationEstimator
+    c::T = 6
+    M::V = nothing
 end
 
 (alg::BiweightLocationBackground)(data; dims=:) = location(data; dims, alg.c, alg.M)
@@ -206,9 +206,9 @@ julia> BiweightScaleRMS(c=3.0)(data, dims=1)
  0.0  0.0  0.0  0.0  0.0
 ```
 """
-Base.@kwdef struct BiweightScaleRMS <: RMSEstimator
-    c = 9.0
-    M = nothing
+Base.@kwdef struct BiweightScaleRMS{T,V} <: RMSEstimator
+    c::T = 9.0
+    M::V = nothing
 end
 
 (alg::BiweightScaleRMS)(data; dims=:) = scale(data; dims, alg.c, alg.M)

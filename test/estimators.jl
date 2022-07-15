@@ -9,7 +9,7 @@ using StatsBase: mad
 )
     frame_size = (1000, 1000)
 
-    @test estimator(ones(1)) == 1
+    @test @inferred(estimator(ones(1))) == 1
     ## Flat ones
     data = ones(frame_size)
     @test all(d -> isapprox(d, 1), estimator(data))
@@ -38,16 +38,16 @@ using StatsBase: mad
 
     ## Random data
     data = randn(rng, frame_size)
-    @test all(d -> isapprox(d, 0; atol=10/sqrt(prod(frame_size))), estimator(data))
+    @test all(d -> isapprox(d, 0; atol=10 / sqrt(prod(frame_size))), estimator(data))
 
     # along each dimension
     res = estimator(data; dims=1)
     @test size(res) == (1, frame_size[2])
-    @test all(d -> isapprox(d, 0; atol=10/sqrt(frame_size[1])), res)
+    @test all(d -> isapprox(d, 0; atol=10 / sqrt(frame_size[1])), res)
 
     res = estimator(data; dims=2)
     @test size(res) == (frame_size[1], 1)
-    @test all(d -> isapprox(d, 0; atol=10/sqrt(frame_size[2])), res)
+    @test all(d -> isapprox(d, 0; atol=10 / sqrt(frame_size[2])), res)
 end
 
 @testset "SourceExtractorBackground" begin
@@ -70,7 +70,7 @@ end
 @testset "Trivial $estimator" for estimator in (StdRMS(), MADStdRMS(), BiweightScaleRMS())
     frame_size = (1000, 1000)
 
-    @test estimator(ones(1)) == 0
+    @test @inferred(estimator(ones(1))) == 0
     ## Flat data
     data = ones(frame_size)
     @test all(d -> isapprox(d, 0; atol=1e-2), estimator(data))
@@ -86,16 +86,16 @@ end
 
     ## random data
     data = randn(rng, frame_size)
-    @test all(d -> isapprox(d, 1; atol=10/sqrt(prod(frame_size))), estimator(data))
+    @test all(d -> isapprox(d, 1; atol=10 / sqrt(prod(frame_size))), estimator(data))
 
     # along each dimension
     res = estimator(data; dims=1)
     @test size(res) == (1, frame_size[2])
-    @test all(d -> isapprox(d, 1; atol=10/sqrt(frame_size[1])), res)
+    @test all(d -> isapprox(d, 1; atol=10 / sqrt(frame_size[1])), res)
 
     res = estimator(data; dims=2)
     @test size(res) == (frame_size[1], 1)
-    @test all(d -> isapprox(d, 1; atol=10/sqrt(frame_size[2])), res)
+    @test all(d -> isapprox(d, 1; atol=10 / sqrt(frame_size[2])), res)
 end
 
 @testset "StdRMS" begin
