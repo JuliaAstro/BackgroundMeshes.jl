@@ -39,4 +39,4 @@ If you would like to contribute, feel free to open a [pull request](https://gith
 
 ## License
 
-The work derived from [astropy/photutils](https://github.com/astropy/photutils) is BSD 3-clause. All other work uses the MIT license. Therefore, this work as a whole is BSD 3-clause. [`LICENSE`](LICENSE) contains all licenses and any files using derived work are noted at the top of the file.
+The work derived from [astropy/photutils](https://github.com/astropy/photutils) is BSD 3-clause. All other work uses the MIT license. Therefore, this work as a whole is BSD 3-clause. [`LICENSE`](https://github.com/JuliaAstro/BackgroundMeshes.jl/blob/main/LICENSE) contains all licenses and any files using derived work are noted at the top of the file.
