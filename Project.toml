@@ -15,6 +15,7 @@ StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
 
 [compat]
 BiweightStats = "0.2"
+ConcreteStructs = "0.2"
 ImageFiltering = "0.6,0.7"
 ImageTransformations = "0.8,0.9"
 Interpolations = "0.12,0.13,0.14"
