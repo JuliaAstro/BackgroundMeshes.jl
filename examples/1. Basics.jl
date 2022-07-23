@@ -1,4 +1,6 @@
 #=
+# 1. Basics
+
 Let's dig into the basics of how these background meshes work. Let's start by creating some data.
 For this image, I'll create a 2-D polynomial gradient across a 1000x1000 image.
 =#

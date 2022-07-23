@@ -1,3 +1,6 @@
+#=
+# 2. Background Estimation on HST Data
+=#
 using AstroImages
 using BackgroundMeshes
 using FITSIO

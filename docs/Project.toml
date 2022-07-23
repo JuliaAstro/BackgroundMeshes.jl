@@ -1,8 +1,8 @@
 [deps]
 AstroImages = "fe3fc30c-9b16-11e9-1c73-17dabf39f4ad"
 BackgroundMeshes = "b200be5e-c4c1-4b3d-840b-d423a53b46f3"
-DemoCards = "311a05b2-6137-4a5a-b473-18580a3d38b5"
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FITSIO = "525bcba6-941b-5504-bd06-fd0dc1a4d2eb"
+Literate = "98b081ad-f1c9-55d3-8b20-4c87d4299306"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
