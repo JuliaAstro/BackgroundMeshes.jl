@@ -1,5 +1,5 @@
 #=
-# 2. Background Estimation on HST Data
+# 2. Background Estimation on real Data
 =#
 using AstroImages
 using BackgroundMeshes
