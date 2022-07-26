@@ -11,7 +11,7 @@ using Statistics
 using Plots
 rng = Random.seed!(125512)
 
-xs = range(0, 1, length=1000)
+xs = range(0, 1; length=1000)
 ys = xs'
 data = xs .* ys
 implot(data)
@@ -23,14 +23,13 @@ Background meshes are defined by a grid of sub-images across the original data. 
 =#
 
 box_sizes = (10, 50, 100)
-backgrounds = map(n -> estimate_background(data, n; location=mean) |> first, box_sizes)
+backgrounds = map(n -> first(estimate_background(data, n; location=mean)), box_sizes)
 plot(
-    implot(backgrounds[1], title="N=10", cbar=false),
-    implot(backgrounds[2], title="N=50", cbar=false),
-    implot(backgrounds[3], title="N=100", cbar=false),
+    implot(backgrounds[1]; title="N=10", cbar=false),
+    implot(backgrounds[2]; title="N=50", cbar=false),
+    implot(backgrounds[3]; title="N=100", cbar=false);
     layout=(1, 3),
 )
-
 
 #=
 ## Location Estimators
@@ -52,7 +51,7 @@ y_idxs = rand(rng, axes(sub_img, 2), 50)
 for (x, y) in zip(x_idxs, y_idxs)
     sub_img[x, y] = 2^16
 end
-implot(sub_img, clims=zscale(sub_img))
+implot(sub_img; clims=zscale(sub_img))
 
 # now, how does each estimator compare
 
@@ -61,10 +60,10 @@ bkgs = [
     "median" => median(sub_img),
     "source extractor" => SourceExtractorBackground()(sub_img),
     "MMM" => MMMBackground()(sub_img),
-    "biweight location" => BiweightLocationBackground()(sub_img)
+    "biweight location" => BiweightLocationBackground()(sub_img),
 ]
-scatter(first.(bkgs), last.(bkgs), lab="")
-hline!([true_background], c=:black, ls=:dash, lab="true value")
+scatter(first.(bkgs), last.(bkgs); lab="")
+hline!([true_background]; c=:black, ls=:dash, lab="true value")
 #=
 
 here we see that `median` and [`BiweightLocationBackground`](@ref) do a good job of estimating the background despite the outliers, however the outliers can be removed ahead of time with a tool like [LACosmic.jl](https://github.com/JuliaAstro/LACosmic.jl).
@@ -85,10 +84,10 @@ true_rms = 1
 rmss = [
     "std" => StdRMS()(sub_img),
     "MAD" => MADStdRMS()(sub_img),
-    "biweight scale" => BiweightScaleRMS()(sub_img)
+    "biweight scale" => BiweightScaleRMS()(sub_img),
 ]
-scatter(first.(rmss), last.(rmss), lab="")
-hline!([true_rms], c=:black, ls=:dash, lab="true value")
+scatter(first.(rmss), last.(rmss); lab="")
+hline!([true_rms]; c=:black, ls=:dash, lab="true value")
 
 #=
 again, we see the median-based [`MADStdRMS`](@ref) as well as the [`BiweightScaleRMS`](@ref) do well despite the outliers.
