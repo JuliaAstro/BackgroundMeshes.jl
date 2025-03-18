@@ -17,16 +17,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version:
-          - '1.6'
-          - '1'
-          - 'nightly'
-        os:
-          - ubuntu-latest
-          - macOS-latest
-          - windows-latest
-        arch:
-          - x64
+        version: ['1.6', '1', 'nightly']
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        arch: [x64]
     steps:
       - uses: actions/checkout@v4
       - uses: julia-actions/setup-julia@v2
@@ -50,8 +43,16 @@ jobs:
         with:
           version: '1'
       - uses: julia-actions/julia-buildpkg@v1
-      - run: julia -e 'using Pkg; Pkg.add("Aqua")'
-      - run: julia --project=@. -e 'using Aqua, BackgroundMeshes; Aqua.test_all(BackgroundMeshes)'
+      - name: Install Aqua
+        shell: julia --color=yes {0}
+        run: |
+          using Pkg
+          Pkg.add("Aqua")
+      - name: Run Aqua
+        shell: julia --color=yes --project=@. {0}
+        run: |
+          using Aqua, BackgroundMeshes
+          Aqua.test_all(BackgroundMeshes)
   docs:
     name: Documentation
     runs-on: ubuntu-latest
@@ -65,9 +66,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-      - run: |
-          julia --project=docs -e '
-            using Documenter: DocMeta, doctest
-            using BackgroundMeshes
-            DocMeta.setdocmeta!(BackgroundMeshes, :DocTestSetup, :(using BackgroundMeshes); recursive=true)
-            doctest(BackgroundMeshes)'
+      - name: Run doctests
+        shell: julia --color=yes--project=docs {0}
+        run: |
+          using Documenter: DocMeta, doctest
+          using BackgroundMeshes
+          DocMeta.setdocmeta!(BackgroundMeshes, :DocTestSetup, :(using BackgroundMeshes); recursive=true)
+          doctest(BackgroundMeshes)
