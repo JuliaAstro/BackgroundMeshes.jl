@@ -17,7 +17,7 @@ This abstract type embodies the possible background estimation algorithms for di
 To implement a new estimator, you must define the struct and define a method like `(::MyEstimator)(data::AbstractArray; dims=:)`.
 
 # See Also
-* [Location Estimators](@ref)
+* [Location Estimators](@ref Location-Estimators-API)
 """
 abstract type LocationEstimator end
 
@@ -29,7 +29,7 @@ This abstract type embodies the possible background RMS estimation algorithms fo
 To implement a new estimator, you must define the struct and define a method like `(::MyRMSEstimator)(data::AbstractArray; dims=:)`.
 
 # See Also
-* [RMS Estimators](@ref)
+* [RMS Estimators](@ref RMS-Estimators-API)
 """
 abstract type RMSEstimator end
 
