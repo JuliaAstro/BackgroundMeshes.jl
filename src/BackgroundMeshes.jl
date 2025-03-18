@@ -213,15 +213,16 @@ If `fill === :clamp`, this will clamp values in `x` lower than `center - sigma_l
 
 # Examples
 ```jldoctest
-julia> x = randn(100_000);
+julia> x = randn(rng, 100_000); # rng is a pre-defined generator for reproducibility
 
 julia> extrema(x)
-(-4.496308951466683, 4.080724496910187)
+(-4.308034628060624, 4.082248634424802)
+
 
 julia> x_clip = sigma_clip(x, 1);
 
 julia> extrema(x_clip) # should be close to (-1, 1)
-(-1.0042721545326967, 0.9957463910682249)
+(-0.9912911763341569, 1.0077955853440512)
 ```
 """
 function sigma_clip(
