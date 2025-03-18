@@ -67,7 +67,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
       - name: Run doctests
-        shell: julia --color=yes--project=docs {0}
+        shell: julia --color=yes --project=docs {0}
         run: |
           using Documenter: DocMeta, doctest
           using BackgroundMeshes
