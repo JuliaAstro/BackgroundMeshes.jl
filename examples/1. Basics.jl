@@ -41,7 +41,7 @@ As mentioned above, statistics are calculated inside each of the sub-images. Dep
 3. [`MMMBackground`](@ref)
 4. [`BiweightLocationBackground`](@ref)
 
-See the [`LocationEstimator`](@ref) docs for more information about each estimator. Let's create some data with outliers and look at how each estimator handles the outliers
+See the [`LocationEstimator`](@ref BackgroundMeshes.LocationEstimator) docs for more information about each estimator. Let's create some data with outliers and look at how each estimator handles the outliers
 =#
 true_background = 10
 sub_img = randn(rng, 100, 100) .+ true_background
@@ -76,7 +76,7 @@ Within each sub-image we also calulate the root-mean-square (RMS) estimate of no
 2. [`MADStdRMS`](@ref)
 3. [`BiweightScaleRMS`](@ref)
 
-See the [`RMSEstimator`](@ref) docs for more information about each estimator. Let's create some data with outliers and look at how each estimator handles the outliers
+See the [`RMSEstimator`](@ref BackgroundMeshes.RMSEstimator) docs for more information about each estimator. Let's create some data with outliers and look at how each estimator handles the outliers
 =#
 
 ## use same data before N(10, 1)

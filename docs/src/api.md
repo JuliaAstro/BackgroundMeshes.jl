@@ -16,7 +16,7 @@ sigma_clip!
 
 All of these estimators are subtypes of [`BackgroundMeshes.LocationEstimator`](@ref) or [`BackgroundMeshes.RMSEstimator`](@ref) and are derived using various statistical and image processing methods.
 
-### Location Estimators
+### [Location Estimators](@id Location Estimators API)
 
 These estimators are used for estimating the background using some form of a central statistic.
 
@@ -27,7 +27,7 @@ SourceExtractorBackground
 BiweightLocationBackground
 ```
 
-### RMS Estimators
+### [RMS Estimators](@id RMS Estimators API)
 
 These estimators are used for estimating the root-mean-square (RMS) of the background using some form of a deviation statistic.
 
