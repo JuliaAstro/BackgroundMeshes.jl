@@ -16,18 +16,18 @@ Create meshes for estimating the background in astronomical images. Originally a
 
 Currently, this package is unregistered and must be installed directly from this repository using the built-in package manager
 
-```julia
-julia>]
+```julia-repl
+julia> ]
 pkg> add https://github.com/JuliaAstro/BackgroundMeshes.jl
 ```
 
-```julia
+```julia-repl
 julia> using Pkg; Pkg.add("https://github.com/JuliaAstro/BackgroundMeshes.jl")
 ```
 
 To load this package
 
-```julia
+```julia-repl
 julia> using BackgroundMeshes
 ```
 
