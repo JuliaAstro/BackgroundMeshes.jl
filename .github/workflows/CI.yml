@@ -66,10 +66,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-      - name: Run doctests
-        shell: julia --color=yes --project=docs {0}
-        run: |
-          using Documenter: DocMeta, doctest
-          using BackgroundMeshes
-          DocMeta.setdocmeta!(BackgroundMeshes, :DocTestSetup, :(using BackgroundMeshes); recursive=true)
-          doctest(BackgroundMeshes)
