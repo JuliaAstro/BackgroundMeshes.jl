@@ -124,9 +124,7 @@ function (IDW::IDWInterpolator)(mesh::AbstractArray{T}) where {T}
         @inbounds @views knots[:, i] .= idx.I
     end
 
-    itp = ShepardIDWInterpolator(
-        knots,
-        float(mesh),
+    itp = ShepardIDWInterpolator(knots, float(mesh);
         IDW.leafsize,
         IDW.k,
         IDW.power,
@@ -143,8 +141,14 @@ end
 struct IDW <: InterpolationType end
 
 struct ShepardIDWInterpolator{
-    T<:AbstractFloat,N,KD<:KDTree{<:AbstractVector,<:MinkowskiMetric,T},K<:Integer,P,R,C
-} <: AbstractInterpolation{T,N,IDW}
+    T<:AbstractFloat,
+    N,
+    KD<:KDTree{<:AbstractVector,<:MinkowskiMetric,T},
+    K<:Integer,
+    P,
+    R,
+    C,
+    } <: AbstractInterpolation{T,N,IDW}
     values::Array{T,N}
     tree::KD
     k::K
