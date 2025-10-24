@@ -1,7 +1,17 @@
 module BackgroundMeshes
 
-using Statistics
+using StatsBase: mad
+using Statistics: mean, median, median!, std
 using ImageFiltering: padarray, Fill, mapwindow
+
+# estimators.jl
+using BiweightStats: location, scale
+
+# interpolators.jl
+using ConcreteStructs: @concrete
+using Interpolations: InterpolationType, AbstractInterpolation, cubic_spline_interpolation
+using ImageTransformations: imresize!
+using NearestNeighbors: knn, KDTree, MinkowskiMetric
 
 export estimate_background,
     sigma_clip,

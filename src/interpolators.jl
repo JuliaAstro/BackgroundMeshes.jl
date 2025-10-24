@@ -2,11 +2,6 @@
 Part of this work is derived from astropy/photutils and astropy/astropy. The relevant derivations
 are considered under a BSD 3-clause license. =#
 
-using ConcreteStructs
-using Interpolations: InterpolationType, AbstractInterpolation, cubic_spline_interpolation
-using ImageTransformations: imresize!
-using NearestNeighbors: knn, KDTree, MinkowskiMetric
-
 # Interpolator
 
 """
