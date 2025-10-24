@@ -1,7 +1,3 @@
-```@meta
-CurrentModule = BackgroundMeshes
-```
-
 # BackgroundMeshes.jl
 
 [![Code](https://img.shields.io/badge/Code-GitHub-black.svg)](https://github.com/JuliaAstro/BackgroundMeshes.jl)

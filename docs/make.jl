@@ -2,12 +2,13 @@ using BackgroundMeshes
 using Documenter
 using Documenter.Remotes: GitHub
 
-DocTestSetup = quote
+setup = quote
     using BackgroundMeshes
     using StableRNGs
     rng = StableRNG(1)
 end
-DocMeta.setdocmeta!(BackgroundMeshes, :DocTestSetup, DocTestSetup; recursive=true)
+
+DocMeta.setdocmeta!(BackgroundMeshes, :DocTestSetup, setup; recursive=true)
 
 pages = [
     "Home" => "index.md",
@@ -24,7 +25,6 @@ makedocs(;
         prettyurls = get(ENV, "CI", "false") == "true",
         canonical = "https://JuliaAstro.github.io/BackgroundMeshes.jl",
         edit_link = "main",
-        assets = String[],
     ),
     pages,
     checkdocs = :exports,
