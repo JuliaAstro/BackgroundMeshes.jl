@@ -2,11 +2,6 @@
 Part of this work is derived from astropy/photutils and astropy/astropy. The relevant derivations
 are considered under a BSD 3-clause license. =#
 
-using ConcreteStructs
-using Interpolations: InterpolationType, CubicSplineInterpolation, AbstractInterpolation
-using ImageTransformations: imresize!
-using NearestNeighbors: knn, KDTree, MinkowskiMetric
-
 # Interpolator
 
 """
@@ -56,21 +51,24 @@ ZoomInterpolator(factor::Integer) = ZoomInterpolator((factor, factor))
 ZoomInterpolator(f1::Integer, args...) = ZoomInterpolator((f1, args...))
 
 function (z::ZoomInterpolator)(mesh::AbstractArray{T}) where {T}
-    itp = CubicSplineInterpolation(axes(mesh), mesh)
+    itp = cubic_spline_interpolation(axes(mesh), mesh)
     out = similar(mesh, float(T), size(mesh) .* z.factors)
     return imresize!(out, itp)
 end
 
 """
-    IDWInterpolator(factors; leafsize=10,  k=8, power=1, reg=0, conf_dist=1e-12)
+    IDWInterpolator(factors; leafsize=10, k=8, power=1, reg=0, conf_dist=1e-12)
 
 Use Shepard Inverse Distance Weighing interpolation scheme to increase resolution of a mesh.
 
 `factors` represents the level of "zoom", so an input mesh of size `(10, 10)` with factors `(2, 2)` will have an output size of `(20, 20)`. If only an integer is provided, it will be used as the factor for every axis.
 
-The interpolator can be called with some additional parameter being, `leaf_size` determines at what number of points to stop splitting the tree further,
-` k` which is the number of nearest neighbors to be considered, `power` is the exponent for distance in the weighing factor,
-`reg` is the offset for the weighing factor in denominator, `conf_dist` is the distance below which two points would be considered as the same point.
+The interpolator can be called with some additional parameters:
+- `leaf_size` determines at what number of points to stop splitting the tree further,
+- `k` which is the number of nearest neighbors to be considered,
+- `power` is the exponent for distance in the weighing factor,
+- `reg` is the offset for the weighing factor in denominator,
+- `conf_dist` is the distance below which two points would be considered as the same point.
 
 
 # Examples
@@ -92,8 +90,7 @@ julia> IDWInterpolator(3, 1; k=2, power=4)([1 0; 0 1])
  0.0        1.0
 ```
 """
-@concrete struct IDWInterpolator{F<:NTuple{2,<:Integer},K<:Integer} <:
-                 BackgroundInterpolator
+@concrete struct IDWInterpolator{F<:NTuple{2,<:Integer},K<:Integer} <: BackgroundInterpolator
     factors::F
     leafsize::K
     k::K
@@ -102,14 +99,18 @@ julia> IDWInterpolator(3, 1; k=2, power=4)([1 0; 0 1])
     conf_dist
 end
 
-function IDWInterpolator(factors; leafsize=10, k=8, power=1.0, reg=0.0, conf_dist=1e-12)
+function IDWInterpolator(factors;
+    leafsize = 10,
+    k = 8,
+    power = 1.0,
+    reg = 0.0,
+    conf_dist = 1e-12,
+    )
     return IDWInterpolator(factors, leafsize, k, power, reg, conf_dist)
 end
 # convenience constructors
 IDWInterpolator(factor::Integer; kwargs...) = IDWInterpolator((factor, factor); kwargs...)
-function IDWInterpolator(factor::Integer, args...; kwargs...)
-    return IDWInterpolator((factor, args...); kwargs...)
-end
+IDWInterpolator(factor::Integer, args...; kwargs...) = IDWInterpolator((factor, args...); kwargs...)
 
 function (IDW::IDWInterpolator)(mesh::AbstractArray{T}) where {T}
     knots = Array{float(T)}(undef, 2, length(mesh))
@@ -118,8 +119,12 @@ function (IDW::IDWInterpolator)(mesh::AbstractArray{T}) where {T}
         @inbounds @views knots[:, i] .= idx.I
     end
 
-    itp = ShepardIDWInterpolator(
-        knots, float(mesh); IDW.leafsize, IDW.k, IDW.power, IDW.reg, IDW.conf_dist
+    itp = ShepardIDWInterpolator(knots, float(mesh);
+        IDW.leafsize,
+        IDW.k,
+        IDW.power,
+        IDW.reg,
+        IDW.conf_dist,
     )
     out = similar(mesh, float(T), size(mesh) .* IDW.factors)
     return imresize!(out, itp)
@@ -131,8 +136,14 @@ end
 struct IDW <: InterpolationType end
 
 struct ShepardIDWInterpolator{
-    T<:AbstractFloat,N,KD<:KDTree{<:AbstractVector,<:MinkowskiMetric,T},K<:Integer,P,R,C
-} <: AbstractInterpolation{T,N,IDW}
+    T<:AbstractFloat,
+    N,
+    KD<:KDTree{<:AbstractVector,<:MinkowskiMetric,T},
+    K<:Integer,
+    P,
+    R,
+    C,
+    } <: AbstractInterpolation{T,N,IDW}
     values::Array{T,N}
     tree::KD
     k::K
@@ -151,9 +162,9 @@ function ShepardIDWInterpolator(
     values::AbstractArray;
     leafsize::Integer=10,
     k::Integer=8,
-    power=1,
-    reg=0,
-    conf_dist=1e-12,
+    power = 1,
+    reg = 0,
+    conf_dist = 1e-12,
 )
     if length(values) < k
         throw(
@@ -162,7 +173,7 @@ function ShepardIDWInterpolator(
             ),
         )
     end
-    tree = KDTree(knots; leafsize=leafsize)
+    tree = KDTree(knots; leafsize)
     return ShepardIDWInterpolator(values, tree, k, power, reg, conf_dist)
 end
 

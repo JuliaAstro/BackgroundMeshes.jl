@@ -1,12 +1,11 @@
-using BackgroundMeshes
-using StableRNGs
-using Statistics
-using Test
+using ParallelTestRunner: runtests
+import BackgroundMeshes
 
-rng = StableRNG(659929)
+const init_code = quote
+    import StatsBase: median, mean, std, mad
+    import StableRNGs: StableRNG
 
-@testset "BackgroundMeshes.jl" begin
-    include("background.jl")
-    include("estimators.jl")
-    include("interpolators.jl")
+    const rng = StableRNG(659929)
 end
+
+runtests(BackgroundMeshes, Base.ARGS; init_code)

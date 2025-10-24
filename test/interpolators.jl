@@ -1,4 +1,4 @@
-using BackgroundMeshes: ShepardIDWInterpolator
+using BackgroundMeshes: IDWInterpolator, ShepardIDWInterpolator
 
 @testset "IDWInterpolator" begin
     itp = @inferred IDWInterpolator((2, 3); k=4)

@@ -2,8 +2,7 @@
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaAstro.github.io/BackgroundMeshes.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaAstro.github.io/BackgroundMeshes.jl/dev/)
 
-[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/B/BackgroundMeshes.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
-[![Build Status](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![CI](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/JuliaAstro/BackgroundMeshes.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/BackgroundMeshes.jl)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
