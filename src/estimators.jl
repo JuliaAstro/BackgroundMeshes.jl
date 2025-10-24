@@ -66,10 +66,10 @@ function validate_SE(background, _mean, _median, _std)
     return background
 end
 
-function (::SourceExtractorBackground)(data; dims=:)
-    _mean = mean(data; dims=dims)
-    _median = median(data; dims=dims)
-    _std = std(data; dims=dims)
+function (::SourceExtractorBackground)(data; dims = :)
+    _mean = mean(data; dims)
+    _median = median(data; dims)
+    _std = std(data; dims)
 
     background = @. 2.5 * _median - 1.5 * _mean
     return validate_SE.(background, _mean, _median, _std)
@@ -102,9 +102,9 @@ Base.@kwdef struct MMMBackground{T,V} <: LocationEstimator
     mean_factor::V = 2
 end
 
-function (alg::MMMBackground)(data; dims=:)
-    _median = median(data; dims=dims)
-    _mean = mean(data; dims=dims)
+function (alg::MMMBackground)(data; dims = :)
+    _median = median(data; dims)
+    _mean = mean(data; dims)
     return @. alg.median_factor * _median - alg.mean_factor * _mean
 end
 
@@ -156,7 +156,7 @@ julia> StdRMS()(data, dims=1)
 """
 struct StdRMS <: RMSEstimator end
 
-(::StdRMS)(data; dims=:) = std(data; corrected=false, dims=dims)
+(::StdRMS)(data; dims = :) = std(data; corrected = false, dims)
 
 """
     MADStdRMS()
@@ -181,9 +181,9 @@ julia> MADStdRMS()(data, dims=1)
 """
 struct MADStdRMS <: RMSEstimator end
 
-_mad(data, ::Colon) = mad(data; normalize=true)
-_mad(data, dims) = mapslices(x -> mad(x; normalize=true), data; dims=dims)
-(::MADStdRMS)(data; dims=:) = _mad(data, dims)
+_mad(data, ::Colon) = mad(data; normalize = true)
+_mad(data, dims) = mapslices(x -> mad(x; normalize=true), data; dims)
+(::MADStdRMS)(data; dims = :) = _mad(data, dims)
 
 """
     BiweightScaleRMS(c=9.0, M=nothing)
