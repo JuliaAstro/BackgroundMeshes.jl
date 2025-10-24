@@ -22,7 +22,7 @@ makedocs(;
     repo = GitHub("JuliaAstro/BackgroundMeshes.jl"),
     sitename = "BackgroundMeshes.jl",
     format = Documenter.HTML(;
-        prettyurls = get(ENV, "CI", "false") == "true",
+        prettyurls = true,
         canonical = "https://JuliaAstro.github.io/BackgroundMeshes.jl",
         edit_link = "main",
     ),
