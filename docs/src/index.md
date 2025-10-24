@@ -5,33 +5,25 @@ CurrentModule = BackgroundMeshes
 # BackgroundMeshes.jl
 
 [![Code](https://img.shields.io/badge/Code-GitHub-black.svg)](https://github.com/JuliaAstro/BackgroundMeshes.jl)
-[![Build Status](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/B/BackgroundMeshes.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaAstro.github.io/BackgroundMeshes.jl/stable/)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaAstro.github.io/BackgroundMeshes.jl/dev/)
+
+[![CI](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/JuliaAstro/BackgroundMeshes.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/BackgroundMeshes.jl)
-[![License](https://img.shields.io/github/license/JuliaAstro/BackgroundMeshes.jl?color=yellow)](https://github.com/JuliaAstro/BackgroundMeshes.jl/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 Create meshes for estimating the background in astronomical images. Originally a submodule of [Photometry.jl](https://github.com/JuliaAstro/Photometry.jl).
 
-## Installation
+## Quickstart
 
 Currently, this package is unregistered and must be installed directly from this repository using the built-in package manager
 
 ```julia-repl
 julia> ]
+# Or, using Pkg; Pkg.add(url = "https://github.com/JuliaAstro/BackgroundMeshes.jl")
 pkg> add https://github.com/JuliaAstro/BackgroundMeshes.jl
-```
-
-```julia-repl
-julia> using Pkg; Pkg.add("https://github.com/JuliaAstro/BackgroundMeshes.jl")
-```
-
-To load this package
-
-```julia-repl
 julia> using BackgroundMeshes
 ```
-
-For more information, see the [Pkg documentation](https://docs.julialang.org/en/v1/stdlib/Pkg/).
 
 ## Contributing and Support
 
