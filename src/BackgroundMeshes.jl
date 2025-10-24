@@ -222,7 +222,7 @@ function sigma_clip(x::AbstractArray{T}, sigma_low::Real, sigma_high::Real=sigma
     center = median(x),
     std = std(x),
     ) where {T}
-    return sigma_clip!(float(x), sigma_low, sigma_high; fill, center, std)
+    return sigma_clip!(float(copy(x)), sigma_low, sigma_high; fill, center, std)
 end
 
 end
