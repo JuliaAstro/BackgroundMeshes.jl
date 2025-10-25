@@ -1,4 +1,4 @@
-using ParallelTestRunner: runtests
+using ParallelTestRunner: runtests, parse_args
 import BackgroundMeshes
 
 const init_code = quote
@@ -8,4 +8,6 @@ const init_code = quote
     const rng = StableRNG(659929)
 end
 
-runtests(BackgroundMeshes, Base.ARGS; init_code)
+args = parse_args(Base.ARGS)
+
+runtests(BackgroundMeshes, args; init_code)
