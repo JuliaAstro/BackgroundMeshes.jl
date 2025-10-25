@@ -1,4 +1,4 @@
-using ParallelTestRunner: runtests, parse_args
+using ParallelTestRunner: runtests, find_tests, parse_args
 import BackgroundMeshes
 
 const init_code = quote
