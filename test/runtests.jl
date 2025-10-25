@@ -9,5 +9,6 @@ const init_code = quote
 end
 
 args = parse_args(Base.ARGS)
+testsuite = find_tests(@__DIR__)
 
-runtests(BackgroundMeshes, args; init_code)
+runtests(BackgroundMeshes, args; testsuite, init_code)
