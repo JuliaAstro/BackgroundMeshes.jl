@@ -16,14 +16,6 @@ concurrency:
 jobs:
   docs:
     name: build
-    # These permissions are needed to:
-    # - Deploy the documentation: https://documenter.juliadocs.org/stable/man/hosting/#Permissions
-    # - Delete old caches: https://github.com/julia-actions/cache#usage
-    permissions:
-      actions: write
-      contents: write
-      pull-requests: read
-      statuses: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -35,3 +27,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          GKSwstype: "100" # fix GKS socket error for plots made in @example blocks
