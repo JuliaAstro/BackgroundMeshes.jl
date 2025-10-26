@@ -8,9 +8,10 @@ const init_code = quote
     const rng = StableRNG(659929)
 end
 
+args = parse_args(Base.ARGS)
 testsuite = find_tests(@__DIR__)
 
 # TODO: remove after this is resolved: https://github.com/JuliaAstro/BackgroundMeshes.jl/pull/19#issuecomment-3447897150
-#args = parse_args(Base.ARGS)
 @info :hmmm (@__DIR__) testsuite
-runtests(BackgroundMeshes, Base.ARGS; testsuite, init_code)
+
+runtests(BackgroundMeshes, args; testsuite, init_code)
