@@ -12,7 +12,7 @@ DocMeta.setdocmeta!(BackgroundMeshes, :DocTestSetup, setup; recursive=true)
 
 pages = [
     "Home" => "index.md",
-    "Examples" => map(Base.Fix1(joinpath, "examples"), ["1_basics.md", "2_background_estimation.md"])
+    "Examples" => map(Base.Fix1(joinpath, "examples"), ["1_basics.md", "2_background_estimation.md"]),
     "API/Reference" => "api.md",
 ]
 
