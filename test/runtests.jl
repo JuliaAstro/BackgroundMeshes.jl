@@ -11,7 +11,4 @@ end
 args = parse_args(Base.ARGS)
 testsuite = find_tests(@__DIR__)
 
-# TODO: remove after this is resolved: https://github.com/JuliaAstro/BackgroundMeshes.jl/pull/19#issuecomment-3447897150
-@info :hmmm (@__DIR__) testsuite
-
 runtests(BackgroundMeshes, args; testsuite, init_code)
