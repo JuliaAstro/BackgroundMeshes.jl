@@ -1,15 +1,18 @@
 name: Documentation
+
 on:
   push:
     branches: [main]
     tags: '*'
   pull_request:
     branches: [main]
+
 concurrency:
   # Skip intermediate builds: always.
   # Cancel intermediate builds: only if it is a pull request build.
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
 jobs:
   docs:
     name: build
@@ -24,3 +27,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
+          GKSwstype: "100" # fix GKS socket error for plots made in @example blocks

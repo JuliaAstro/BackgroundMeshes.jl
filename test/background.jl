@@ -1,3 +1,13 @@
+using BackgroundMeshes:
+    MMMBackground,
+    BiweightLocationBackground,
+    SourceExtractorBackground,
+    StdRMS,
+    MADStdRMS,
+    BiweightScaleRMS,
+    ZoomInterpolator,
+    sigma_clip,
+    estimate_background
 
 @testset "sigma clipping" begin
     x = [1, 2, 3]
@@ -8,26 +18,28 @@
     @test sigma_clip(y, 1, 1) ≈ [1.62917, 2.0, 3.0, 4.0, 5.0, 5.37083] rtol = 1e-4
 
     # using different center
-    @test sigma_clip(y, 1; center=4) ≈
-        [2.1291713066130296, 2.1291713066130296, 3, 4, 5, 5.87082869338697]
+    @test sigma_clip(y, 1; center=4) ≈ [2.1291713066130296, 2.1291713066130296, 3, 4, 5, 5.87082869338697]
     # using different std
     @test sigma_clip(y, 1; std=1) ≈ [2.5, 2.5, 3, 4, 4.5, 4.5]
+    @test count(isnan, sigma_clip(y, 1; fill=NaN)) == 2
+    @test count(isnan, sigma_clip(y, 1; fill=NaN)) == 2
 
-    @test count(isnan, sigma_clip(y, 1; fill=NaN)) == 2
-    @test count(isnan, sigma_clip(y, 1; fill=NaN)) == 2
+    # `sigma_clip` should not mutate
+    z1 = [0.1, 0.2, 3.0, 4.0, 0.2, 0.1]
+    z2 = copy(z1)
+    sigma_clip(z1, 1)
+    @test z1 == z2
 end
 
 @testset "estimate_background interface" begin
     data = ones(100, 100)
 
     @test all(estimate_background(data, 20) .== estimate_background(data, (20, 20)))
-    @test estimate_background(data, 20; filter_size=3) ==
-        estimate_background(data, (20, 20); filter_size=(3, 3))
+    @test estimate_background(data, 20; filter_size=3) == estimate_background(data, (20, 20); filter_size=(3, 3))
     @test size(estimate_background(data, 19; edge_method=:pad)[1]) == (114, 114)
     @test size(estimate_background(data, 19; edge_method=:crop)[1]) == (95, 95)
     X = rand(rng, 100, 100)
-    @test estimate_background(data; location=median, rms=mean) ==
-        estimate_background(data; location=mean, rms=median)[[2, 1]]
+    @test estimate_background(data; location=median, rms=mean) == estimate_background(data; location=mean, rms=median)[[2, 1]]
     @test_throws MethodError estimate_background(data, (4, 4), edge_method=:yeet)
     @test_throws MethodError estimate_background(data, (4, 4, 4))
     @test_throws ErrorException estimate_background(data, 4, filter_size=2)
