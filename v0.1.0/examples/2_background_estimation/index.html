@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>2. Background Estimation on Real Data · BackgroundMeshes.jl</title><meta name="title" content="2. Background Estimation on Real Data · BackgroundMeshes.jl"/><meta property="og:title" content="2. Background Estimation on Real Data · BackgroundMeshes.jl"/><meta property="twitter:title" content="2. Background Estimation on Real Data · BackgroundMeshes.jl"/><meta name="description" content="Documentation for BackgroundMeshes.jl."/><meta property="og:description" content="Documentation for BackgroundMeshes.jl."/><meta property="twitter:description" content="Documentation for BackgroundMeshes.jl."/><meta property="og:url" content="https://JuliaAstro.github.io/BackgroundMeshes.jl/examples/2_background_estimation/"/><meta property="twitter:url" content="https://JuliaAstro.github.io/BackgroundMeshes.jl/examples/2_background_estimation/"/><link rel="canonical" href="https://JuliaAstro.github.io/BackgroundMeshes.jl/examples/2_background_estimation/"/><script data-outdated-warner src="../../assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.050/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="../.."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="../../assets/documenter.js"></script><script src="../../search_index.js"></script><script src="../../siteinfo.js"></script><script src="../../../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-mocha.css" data-theme-name="catppuccin-mocha"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-macchiato.css" data-theme-name="catppuccin-macchiato"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-frappe.css" data-theme-name="catppuccin-frappe"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/catppuccin-latte.css" data-theme-name="catppuccin-latte"/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="../../assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="../../assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href="../../">BackgroundMeshes.jl</a></span></div><button class="docs-search-query input is-rounded is-small is-clickable my-2 mx-auto py-1 px-2" id="documenter-search-query">Search docs (Ctrl + /)</button><ul class="docs-menu"><li><a class="tocitem" href="../../">Home</a></li><li><span class="tocitem">Examples</span><ul><li><a class="tocitem" href="../1_basics/">1. Basics</a></li><li class="is-active"><a class="tocitem" href>2. Background Estimation on Real Data</a></li></ul></li><li><a class="tocitem" href="../../api/">API/Reference</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><a class="docs-sidebar-button docs-navbar-link fa-solid fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a><nav class="breadcrumb"><ul class="is-hidden-mobile"><li><a class="is-disabled">Examples</a></li><li class="is-active"><a href>2. Background Estimation on Real Data</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>2. Background Estimation on Real Data</a></li></ul></nav><div class="docs-right"><a class="docs-navbar-link" href="https://github.com/JuliaAstro/BackgroundMeshes.jl" title="View the repository on GitHub"><span class="docs-icon fa-brands"></span><span class="docs-label is-hidden-touch">GitHub</span></a><a class="docs-navbar-link" href="https://github.com/JuliaAstro/BackgroundMeshes.jl/blob/main/docs/src/examples/2_background_estimation.md" title="Edit source on GitHub"><span class="docs-icon fa-solid"></span></a><a class="docs-settings-button docs-navbar-link fa-solid fa-gear" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-article-toggle-button fa-solid fa-chevron-up" id="documenter-article-toggle-button" href="javascript:;" title="Collapse all docstrings"></a></div></header><article class="content" id="documenter-page"><h1 id="2.-Background-Estimation-on-Real-Data"><a class="docs-heading-anchor" href="#2.-Background-Estimation-on-Real-Data">2. Background Estimation on Real Data</a><a id="2.-Background-Estimation-on-Real-Data-1"></a><a class="docs-heading-anchor-permalink" href="#2.-Background-Estimation-on-Real-Data" title="Permalink"></a></h1><p>Estimating backgrounds is an important step in performing photometry. Ideally, we could perfectly describe the background with a scalar value or with some distribution. Unfortunately, it&#39;s impossible for us to precisely separate the background and foreground signals. Here, we use mixture of robust statistical estimators and meshing to let us get the spatially varying background from an astronomical photo.</p><p>Let&#39;s show an example:</p><pre><code class="language-julia hljs">using AstroImages
+using BackgroundMeshes
+using FITSIO
+using Plots
+
+# Download our image, courtesy of astropy
+url = &quot;https://rawcdn.githack.com/astropy/photutils-datasets/8c97b4fa3a6c9e6ea072faeed2d49a20585658ba/data/M6707HH.fits&quot;
+hdu = FITS(download(url))
+image = read(hdu[1])
+
+# Plot
+function imshow(image; kwargs...)
+    xs, ys = axes(image)
+    data = transpose(image)
+    heatmap(xs, ys, data;
+        aspect_ratio = 1,
+        xlim = extrema(xs),
+        ylim = extrema(ys),
+        kwargs...
+    )
+end
+
+imshow(image)</code></pre><img src="815ebaa7.svg" alt="Example block output"/><p>Now let&#39;s try and estimate the background using <a href="../../api/#BackgroundMeshes.estimate_background"><code>estimate_background</code></a>. First, we&#39;ll sigma-clip to try and remove the signals from the stars. Then, the background is broken down into boxes, in this case of size <code>(50, 50)</code>. Within each box, the given statistical estimators get the background value and RMS. By default, we use <a href="../../api/#BackgroundMeshes.SourceExtractorBackground"><code>SourceExtractorBackground</code></a> and <a href="../../api/#BackgroundMeshes.StdRMS"><code>StdRMS</code></a>. This creates a low-resolution image, which we then need to resize. We can accomplish this using an interpolator, by default a cubic-spline interpolator via <a href="../../api/#BackgroundMeshes.ZoomInterpolator"><code>ZoomInterpolator</code></a>. The end result is a smooth estimate of the spatially varying background and background RMS.</p><pre><code class="language-julia hljs"># Sigma-clip
+clipped = sigma_clip(image, 1; fill=NaN)
+
+# Get background and background rms with box-size (50, 50)
+bkg, bkg_rms = estimate_background(clipped, 50)
+
+# Plot
+plot(
+    imshow(image; title=&quot;Original&quot;),
+    imshow(clipped; title=&quot;Sigma-Clipped&quot;),
+    imshow(bkg; title=&quot;Background&quot;),
+    imshow(bkg_rms; title=&quot;Background RMS&quot;);
+    layout = (2, 2),
+    ticks = false,
+)</code></pre><img src="8882a84c.svg" alt="Example block output"/><p>We could apply a median filter, too, by specifying <code>filter_size</code>:</p><pre><code class="language-julia hljs"># Get background and background rms with box-size (50, 50) and filter_size (5, 5)
+bkg_f, bkg_rms_f = estimate_background(clipped, 50; filter_size = 5)
+
+# Plot
+plot(
+    imshow(bkg; title=&quot;Unfiltered&quot;, ylabel=&quot;Background&quot;),
+    imshow(bkg_f; title=&quot;Filtered&quot;),
+    imshow(bkg_rms; ylabel=&quot;RMS&quot;),
+    imshow(bkg_rms_f);
+    layout = (2, 2),
+    ticks = false,
+)</code></pre><img src="5422e2e3.svg" alt="Example block output"/><p>Now we can see our image after subtracting the filtered background and ready for further analysis!</p><pre><code class="language-julia hljs">subt = image .- bkg_f[axes(image)...]
+
+# Plot
+plot(
+    imshow(image; title=&quot;Original&quot;, colorbar=false),
+    imshow(subt; title=&quot;Subtracted&quot;);
+    layout = (1, 2),
+    size = (600, 260),
+    xlims = (400, 800),
+    ylims = ( 400, 800),
+    clims = (minimum(subt), maximum(image)),
+    ticks = false,
+    aspect_ratio = 1,
+)</code></pre><img src="01ef11f6.svg" alt="Example block output"/><h3 id="IDW-Interpolator"><a class="docs-heading-anchor" href="#IDW-Interpolator">IDW Interpolator</a><a id="IDW-Interpolator-1"></a><a class="docs-heading-anchor-permalink" href="#IDW-Interpolator" title="Permalink"></a></h3><p>Here is a quick example using the <a href="../../api/#BackgroundMeshes.IDWInterpolator"><code>IDWInterpolator</code></a>:</p><pre><code class="language-julia hljs">b1, r1 = estimate_background(clipped, 50; filter_size=5)
+b2, r2 = estimate_background(clipped, 50; itp=IDWInterpolator(50), filter_size=5)
+
+# Plot
+plot(
+    imshow(b1; title=&quot;ZoomInterpolator&quot;, ylabel=&quot;Background&quot;),
+    imshow(b2; title=&quot;IDWInterpolator&quot;),
+    imshow(r1; ylabel=&quot;RMS&quot;),
+    imshow(r2);
+    layout = (2, 2),
+    ticks = false,
+)</code></pre><img src="d5a878d4.svg" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../1_basics/">« 1. Basics</a><a class="docs-footer-nextpage" href="../../api/">API/Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.15.0 on <span class="colophon-date" title="Thursday 30 October 2025 03:13">Thursday 30 October 2025</span>. Using Julia version 1.12.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
