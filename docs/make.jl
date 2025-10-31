@@ -23,7 +23,7 @@ makedocs(;
     sitename = "BackgroundMeshes.jl",
     format = Documenter.HTML(;
         prettyurls = true,
-        canonical = "https://JuliaAstro.github.io/BackgroundMeshes.jl",
+        canonical = "https://juliaastro.org/BackgroundMeshes/stable/",
         edit_link = "main",
     ),
     pages,
@@ -37,5 +37,6 @@ if in_CI_env
         repo = "github.com/JuliaAstro/BackgroundMeshes.jl",
         push_preview = true,
         devbranch = "main",
+        versions = ["stable" => "v^", "v#.#"], # Restrict to minor releases
     )
 end

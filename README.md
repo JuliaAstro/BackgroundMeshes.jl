@@ -1,11 +1,10 @@
 # BackgroundMeshes.jl
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://JuliaAstro.github.io/BackgroundMeshes.jl/stable/)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/BackgroundMeshes/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://JuliaAstro.github.io/BackgroundMeshes.jl/dev/)
 
-[![CI](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml?query=branch%3Amain)
+[![CI](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml/badge.svg)](https://github.com/JuliaAstro/BackgroundMeshes.jl/actions/workflows/CI.yml)
 [![Coverage](https://codecov.io/gh/JuliaAstro/BackgroundMeshes.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/BackgroundMeshes.jl)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-orange.svg)](https://opensource.org/licenses/BSD-3-Clause)
-
 
 Create meshes for estimating the background in astronomical images. Originally a submodule of [Photometry.jl](https://github.com/JuliaAstro/Photometry.jl).
 
