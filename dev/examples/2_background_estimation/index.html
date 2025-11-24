@@ -21,7 +21,7 @@ function imshow(image; kwargs...)
     )
 end
 
-imshow(image)</code></pre><img src="ae362fd0.svg" alt="Example block output"/><p>Now let&#39;s try and estimate the background using <a href="../../api/#BackgroundMeshes.estimate_background"><code>estimate_background</code></a>. First, we&#39;ll sigma-clip to try and remove the signals from the stars. Then, the background is broken down into boxes, in this case of size <code>(50, 50)</code>. Within each box, the given statistical estimators get the background value and RMS. By default, we use <a href="../../api/#BackgroundMeshes.SourceExtractorBackground"><code>SourceExtractorBackground</code></a> and <a href="../../api/#BackgroundMeshes.StdRMS"><code>StdRMS</code></a>. This creates a low-resolution image, which we then need to resize. We can accomplish this using an interpolator, by default a cubic-spline interpolator via <a href="../../api/#BackgroundMeshes.ZoomInterpolator"><code>ZoomInterpolator</code></a>. The end result is a smooth estimate of the spatially varying background and background RMS.</p><pre><code class="language-julia hljs"># Sigma-clip
+imshow(image)</code></pre><img src="bc892f50.svg" alt="Example block output"/><p>Now let&#39;s try and estimate the background using <a href="../../api/#BackgroundMeshes.estimate_background"><code>estimate_background</code></a>. First, we&#39;ll sigma-clip to try and remove the signals from the stars. Then, the background is broken down into boxes, in this case of size <code>(50, 50)</code>. Within each box, the given statistical estimators get the background value and RMS. By default, we use <a href="../../api/#BackgroundMeshes.SourceExtractorBackground"><code>SourceExtractorBackground</code></a> and <a href="../../api/#BackgroundMeshes.StdRMS"><code>StdRMS</code></a>. This creates a low-resolution image, which we then need to resize. We can accomplish this using an interpolator, by default a cubic-spline interpolator via <a href="../../api/#BackgroundMeshes.ZoomInterpolator"><code>ZoomInterpolator</code></a>. The end result is a smooth estimate of the spatially varying background and background RMS.</p><pre><code class="language-julia hljs"># Sigma-clip
 clipped = sigma_clip(image, 1; fill=NaN)
 
 # Get background and background rms with box-size (50, 50)
@@ -35,7 +35,7 @@ plot(
     imshow(bkg_rms; title=&quot;Background RMS&quot;);
     layout = (2, 2),
     ticks = false,
-)</code></pre><img src="94dc06ad.svg" alt="Example block output"/><p>We could apply a median filter, too, by specifying <code>filter_size</code>:</p><pre><code class="language-julia hljs"># Get background and background rms with box-size (50, 50) and filter_size (5, 5)
+)</code></pre><img src="97c3f222.svg" alt="Example block output"/><p>We could apply a median filter, too, by specifying <code>filter_size</code>:</p><pre><code class="language-julia hljs"># Get background and background rms with box-size (50, 50) and filter_size (5, 5)
 bkg_f, bkg_rms_f = estimate_background(clipped, 50; filter_size = 5)
 
 # Plot
@@ -46,7 +46,7 @@ plot(
     imshow(bkg_rms_f);
     layout = (2, 2),
     ticks = false,
-)</code></pre><img src="e19402b2.svg" alt="Example block output"/><p>Now we can see our image after subtracting the filtered background and ready for further analysis!</p><pre><code class="language-julia hljs">subt = image .- bkg_f[axes(image)...]
+)</code></pre><img src="70aab9a5.svg" alt="Example block output"/><p>Now we can see our image after subtracting the filtered background and ready for further analysis!</p><pre><code class="language-julia hljs">subt = image .- bkg_f[axes(image)...]
 
 # Plot
 plot(
@@ -59,7 +59,7 @@ plot(
     clims = (minimum(subt), maximum(image)),
     ticks = false,
     aspect_ratio = 1,
-)</code></pre><img src="97f52763.svg" alt="Example block output"/><h3 id="IDW-Interpolator"><a class="docs-heading-anchor" href="#IDW-Interpolator">IDW Interpolator</a><a id="IDW-Interpolator-1"></a><a class="docs-heading-anchor-permalink" href="#IDW-Interpolator" title="Permalink"></a></h3><p>Here is a quick example using the <a href="../../api/#BackgroundMeshes.IDWInterpolator"><code>IDWInterpolator</code></a>:</p><pre><code class="language-julia hljs">b1, r1 = estimate_background(clipped, 50; filter_size=5)
+)</code></pre><img src="e8bb9835.svg" alt="Example block output"/><h3 id="IDW-Interpolator"><a class="docs-heading-anchor" href="#IDW-Interpolator">IDW Interpolator</a><a id="IDW-Interpolator-1"></a><a class="docs-heading-anchor-permalink" href="#IDW-Interpolator" title="Permalink"></a></h3><p>Here is a quick example using the <a href="../../api/#BackgroundMeshes.IDWInterpolator"><code>IDWInterpolator</code></a>:</p><pre><code class="language-julia hljs">b1, r1 = estimate_background(clipped, 50; filter_size=5)
 b2, r2 = estimate_background(clipped, 50; itp=IDWInterpolator(50), filter_size=5)
 
 # Plot
@@ -70,4 +70,4 @@ plot(
     imshow(r2);
     layout = (2, 2),
     ticks = false,
-)</code></pre><img src="1373bcbb.svg" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../1_basics/">« 1. Basics</a><a class="docs-footer-nextpage" href="../../api/">API/Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.15.0 on <span class="colophon-date" title="Friday 31 October 2025 04:21">Friday 31 October 2025</span>. Using Julia version 1.12.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+)</code></pre><img src="624cd852.svg" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-prevpage" href="../1_basics/">« 1. Basics</a><a class="docs-footer-nextpage" href="../../api/">API/Reference »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option><option value="catppuccin-latte">catppuccin-latte</option><option value="catppuccin-frappe">catppuccin-frappe</option><option value="catppuccin-macchiato">catppuccin-macchiato</option><option value="catppuccin-mocha">catppuccin-mocha</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.16.1 on <span class="colophon-date" title="Monday 24 November 2025 23:07">Monday 24 November 2025</span>. Using Julia version 1.12.2.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
